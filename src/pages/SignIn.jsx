@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
-import { Button, Form, InputGroup } from 'react-bootstrap'
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
+import { Button, Form, InputGroup, Spinner } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import FormContainer from '../components/FormContainer'
 
 function SignIn() {
     const [showPassword, setShowPassword] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -21,6 +23,26 @@ function SignIn() {
         }))
     }
 
+    const onSubmit = async (e) => {
+        e.preventDefault()
+
+        setLoading(true)
+
+        try {
+            const auth = getAuth()
+
+            const userCredential = await signInWithEmailAndPassword(auth, email, password)
+
+            if (userCredential.user) {
+                navigate('/')
+            }
+        } catch (error) {
+            console.log(error);
+        }
+
+        setLoading(false)
+    }
+
     return (
         <div className='signInPage'>
             <div className='signInForm'>
@@ -28,7 +50,7 @@ function SignIn() {
                     <div className='form'>
                         <h3 className='text-center mt-2'>Welcome Back!</h3>
                         <br />
-                        <Form> 
+                        <Form onSubmit={onSubmit}> 
                             <Form.Group className="mb-3">
                                 <Form.Label>Email</Form.Label>
                                 <Form.Control type="email" placeholder='Email' id='email' value={email} onChange={onChange} />
@@ -58,6 +80,12 @@ function SignIn() {
                                 <Button className="btn btn-info">Sign Up</Button>
                             </div>
                         </Link>
+
+                        {loading && 
+                            <Spinner animation="border" role="status">
+                                <span className="visually-hidden">Loading...</span>
+                            </Spinner>
+                        }
                     </div>
                 </FormContainer>
             </div>
