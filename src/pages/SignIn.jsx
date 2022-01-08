@@ -3,6 +3,7 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import { Button, Form, InputGroup, Spinner } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import FormContainer from '../components/FormContainer'
+import { toast } from 'react-toastify'
 
 function SignIn() {
     const [showPassword, setShowPassword] = useState(false)
@@ -35,9 +36,10 @@ function SignIn() {
 
             if (userCredential.user) {
                 navigate('/')
+                toast.success(`Signed as ${userCredential.user.displayName}`)
             }
         } catch (error) {
-            console.log(error);
+            toast.error('Incorrect email or password')
         }
 
         setLoading(false)

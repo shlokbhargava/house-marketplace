@@ -5,6 +5,7 @@ import { db } from '../firebase.config'
 import { Button, Form, InputGroup, Spinner } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import FormContainer from '../components/FormContainer'
+import { toast } from 'react-toastify'
 
 function SignUp() {
     const [showPassword, setShowPassword] = useState(false)
@@ -48,8 +49,9 @@ function SignUp() {
             await setDoc(doc(db, 'users', user.uid), formDataCopy)
     
             navigate('/')
+            toast.success(`Welcome ${user.displayName}`)
         } catch (error) {
-            console.log(error);
+            toast.error('Invalid credentials')
         }
 
         setLoading(false)
