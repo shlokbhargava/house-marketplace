@@ -47,7 +47,7 @@ function SignIn() {
                             <Link style={{ textDecoration: 'none', color: '#287bb5', fontWeight: '500' }} to='/forgot-passport'>Forgot Password</Link>
 
                             <div className="d-grid gap-2 mb-3 mt-3">
-                                <Button className="btn btn-info">Sign In</Button>
+                                <Button type='submit' className="btn btn-info">Sign In</Button>
                             </div>
 
                             <h6 className='text-center'>OR</h6>

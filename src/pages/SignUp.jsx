@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
-import { Button, Form, InputGroup } from 'react-bootstrap'
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
+import { setDoc, doc, serverTimestamp } from 'firebase/firestore'
+import { db } from '../firebase.config'
+import { Button, Form, InputGroup, Spinner } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import FormContainer from '../components/FormContainer'
 
 function SignUp() {
     const [showPassword, setShowPassword] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -22,6 +26,35 @@ function SignUp() {
         }))
     }
 
+    const onSubmit = async (e) => {
+        e.preventDefault()
+        setLoading(true)
+
+        try {
+            const auth = getAuth()
+
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+    
+            const user = userCredential.user
+    
+            updateProfile(auth.currentUser, {
+                displayName: name,
+            })
+
+            const formDataCopy = { ...formData }
+            delete formDataCopy.password
+            formDataCopy.timestamp = serverTimestamp()
+
+            await setDoc(doc(db, 'users', user.uid), formDataCopy)
+    
+            navigate('/')
+        } catch (error) {
+            console.log(error);
+        }
+
+        setLoading(false)
+    }
+
     return (
         <div className='signInPage'>
             <div className='signInForm'>
@@ -29,7 +62,7 @@ function SignUp() {
                     <div className='form'>
                         <h3 className='text-center mt-2'>Welcome!</h3>
                         <br />
-                        <Form> 
+                        <Form onSubmit={onSubmit}> 
                             <Form.Group className="mb-3">
                                 <Form.Label>Name</Form.Label>
                                 <Form.Control type="text" placeholder='Name' id='name' value={name} onChange={onChange} />
@@ -51,7 +84,7 @@ function SignUp() {
                             </Form.Group>
 
                             <div className="d-grid gap-2 mb-3 mt-3">
-                                <Button className="btn btn-info">Sign Up</Button>
+                                <Button type='submit' className="btn btn-info">Sign Up</Button>
                             </div>
 
                             <h6 className='text-center'>OR</h6>
@@ -62,6 +95,12 @@ function SignUp() {
                                 <Button className="btn btn-info">Sign In</Button>
                             </div>
                         </Link>
+
+                        {loading && 
+                                <Spinner animation="border" role="status">
+                                    <span className="visually-hidden">Loading...</span>
+                                </Spinner>
+                        }
                     </div>
                 </FormContainer>
             </div>
