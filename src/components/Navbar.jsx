@@ -19,11 +19,7 @@ function Navbar() {
                 <div className='navbar-brand'>
                     <Image alt="" src="/favicon.ico" width="25" height="25" className="d-inline-block align-top"/> &nbsp;House Marketplace
                 </div>
-
-                {/* <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
-                <span className="navbar-toggler-icon"></span>
-                </button> */}
-
+                
                 <div>
                     <ul className="navbar-nav me-auto">
                         <li className="nav-item" onClick={() => navigate('/')}>
