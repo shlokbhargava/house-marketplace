@@ -1,15 +1,23 @@
 import React from 'react'
-import { Image } from 'react-bootstrap'
+import { getAuth } from 'firebase/auth'
+import { Button, Image } from 'react-bootstrap'
 import { useNavigate, useLocation } from 'react-router-dom'
 
 function Navbar() {
     const navigate = useNavigate()
     const location = useLocation()
 
+    const auth = getAuth()
+
     const pathMatchRoute = (route) => {
         if (route === location.pathname) {
             return true
         }
+    }
+
+    const onLogout = () => {
+        auth.signOut()
+        navigate('/')
     }
 
     return (
@@ -36,7 +44,8 @@ function Navbar() {
                             <span style={{ cursor: "pointer" }} className={pathMatchRoute('/profile') ? 'nav-link active' : 'nav-link'}>
                                 <i className="fas fa-user-circle"></i> Profile
                             </span>
-                        </li>
+                        </li>&nbsp;&nbsp;
+                        { auth.currentUser && <Button className='btn-sm' onClick={onLogout}>Logout</Button> }
                     </ul>
                 </div>
 
